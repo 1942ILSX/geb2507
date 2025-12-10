@@ -1,0 +1,778 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Script Spire – A Serious Game for Learning Programming</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    :root {
+      --bg: #050816;
+      --bg-alt: #0b1020;
+      --accent: #4f46e5;
+      --accent-soft: rgba(79, 70, 229, 0.14);
+      --text: #f9fafb;
+      --text-muted: #9ca3af;
+      --card: #111827;
+      --border: #1f2937;
+      --radius-lg: 18px;
+      --radius-xl: 24px;
+      --shadow-soft: 0 18px 45px rgba(0, 0, 0, 0.45);
+      --max-width: 1080px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text",
+        "Segoe UI", sans-serif;
+      background: radial-gradient(circle at top, #111827 0, #020617 55%, #000 100%);
+      color: var(--text);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    main {
+      max-width: var(--max-width);
+      margin: 0 auto;
+      padding: 32px 16px 40px;
+    }
+
+    header {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+      margin-bottom: 40px;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: rgba(15, 23, 42, 0.9);
+      border: 1px solid rgba(148, 163, 184, 0.3);
+      color: var(--text-muted);
+      font-size: 12px;
+    }
+
+    .badge-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 999px;
+      background: radial-gradient(circle at 30% 30%, #f97316, #facc15);
+      box-shadow: 0 0 8px rgba(250, 204, 21, 0.7);
+    }
+
+    .hero {
+      display: grid;
+      grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr);
+      gap: 28px;
+      align-items: center;
+    }
+
+    .hero-title {
+      font-size: clamp(34px, 4vw, 40px);
+      font-weight: 700;
+      letter-spacing: 0.02em;
+    }
+
+    .hero-title span {
+      background: linear-gradient(120deg, #a855f7, #4f46e5, #22d3ee);
+      background-clip: text;
+      -webkit-background-clip: text;
+      color: transparent;
+    }
+
+    .hero-subtitle {
+      margin-top: 10px;
+      font-size: 15px;
+      color: var(--text-muted);
+      max-width: 560px;
+    }
+
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 20px;
+    }
+
+    .btn {
+      border-radius: 999px;
+      padding: 10px 18px;
+      font-size: 14px;
+      font-weight: 500;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      border: 1px solid transparent;
+      cursor: pointer;
+      transition: all 0.18s ease-out;
+      background: transparent;
+      color: var(--text);
+    }
+
+    .btn-primary {
+      background: radial-gradient(circle at top, #4f46e5, #1d4ed8);
+      border-color: rgba(129, 140, 248, 0.8);
+      box-shadow: 0 14px 30px rgba(79, 70, 229, 0.45);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 20px 40px rgba(79, 70, 229, 0.6);
+      filter: brightness(1.04);
+    }
+
+    .btn-ghost {
+      border-color: rgba(148, 163, 184, 0.35);
+      background: rgba(15, 23, 42, 0.7);
+      color: var(--text-muted);
+    }
+
+    .btn-ghost:hover {
+      border-color: rgba(148, 163, 184, 0.7);
+      color: var(--text);
+      background: rgba(15, 23, 42, 0.95);
+    }
+
+    .btn-icon {
+      font-size: 16px;
+    }
+
+    .hero-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 12px;
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    .hero-meta span {
+      padding: 4px 9px;
+      border-radius: 999px;
+      background: rgba(15, 23, 42, 0.85);
+      border: 1px solid rgba(31, 41, 55, 0.9);
+    }
+
+    .hero-card {
+      border-radius: var(--radius-xl);
+      background: radial-gradient(circle at top left, #111827 0, #020617 55%);
+      border: 1px solid rgba(148, 163, 184, 0.25);
+      box-shadow: var(--shadow-soft);
+      padding: 14px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-card-inner {
+      border-radius: 18px;
+      background: radial-gradient(circle at top, rgba(79, 70, 229, 0.15), transparent 55%);
+      border: 1px solid rgba(55, 65, 81, 0.9);
+      padding: 14px;
+      display: grid;
+      grid-template-rows: auto auto;
+      gap: 12px;
+    }
+
+    .hero-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    .hero-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 8px;
+      border-radius: 999px;
+      background: rgba(15, 23, 42, 0.9);
+      border: 1px solid rgba(75, 85, 99, 0.9);
+    }
+
+    .hero-pill-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 999px;
+      background: radial-gradient(circle at 30% 30%, #22c55e, #16a34a);
+      box-shadow: 0 0 10px rgba(34, 197, 94, 0.85);
+    }
+
+    .hero-card-title {
+      font-size: 13px;
+      font-weight: 500;
+      color: #e5e7eb;
+    }
+
+    .hero-thumb {
+      border-radius: 14px;
+      overflow: hidden;
+      border: 1px solid rgba(75, 85, 99, 0.7);
+      background: radial-gradient(circle at top, #0b1120, #020617);
+      min-height: 160px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+
+    .hero-thumb::before {
+      content: "Game Preview";
+      position: absolute;
+      top: 10px;
+      left: 12px;
+      font-size: 11px;
+      padding: 3px 8px;
+      border-radius: 999px;
+      background: rgba(15, 23, 42, 0.85);
+      border: 1px solid rgba(75, 85, 99, 0.8);
+      color: var(--text-muted);
+    }
+
+    .hero-thumb img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      opacity: 0.9;
+    }
+
+    .hero-card-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 11px;
+      color: var(--text-muted);
+      border-top: 1px solid rgba(31, 41, 55, 0.95);
+      padding-top: 8px;
+      margin-top: 6px;
+    }
+
+    .hero-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .hero-tags span {
+      padding: 3px 8px;
+      border-radius: 999px;
+      background: rgba(15, 23, 42, 0.9);
+      border: 1px solid rgba(55, 65, 81, 0.9);
+    }
+
+    section {
+      margin-top: 32px;
+      padding: 20px 18px;
+      border-radius: var(--radius-lg);
+      background: rgba(15, 23, 42, 0.92);
+      border: 1px solid rgba(31, 41, 55, 0.95);
+      box-shadow: 0 12px 35px rgba(0, 0, 0, 0.55);
+    }
+
+    section + section {
+      margin-top: 20px;
+    }
+
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 16px;
+      margin-bottom: 10px;
+    }
+
+    .section-title {
+      font-size: 18px;
+      font-weight: 600;
+    }
+
+    .section-kicker {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      color: var(--text-muted);
+    }
+
+    .section-body {
+      font-size: 14px;
+      color: var(--text-muted);
+    }
+
+    .two-cols {
+      display: grid;
+      grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+      gap: 18px;
+      margin-top: 8px;
+    }
+
+    .pill-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 10px;
+      font-size: 12px;
+    }
+
+    .pill-row span {
+      padding: 4px 9px;
+      border-radius: 999px;
+      background: rgba(15, 23, 42, 0.9);
+      border: 1px solid rgba(55, 65, 81, 0.9);
+    }
+
+    ul {
+      margin-left: 18px;
+      margin-top: 6px;
+    }
+
+    li {
+      margin-bottom: 4px;
+    }
+
+    .feature-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 12px;
+      margin-top: 10px;
+    }
+
+    .feature-card {
+      padding: 10px 11px;
+      border-radius: 14px;
+      border: 1px solid rgba(55, 65, 81, 0.95);
+      background: radial-gradient(circle at top, rgba(15, 23, 42, 0.96), #020617);
+      font-size: 13px;
+    }
+
+    .feature-title {
+      font-weight: 500;
+      margin-bottom: 4px;
+      color: #e5e7eb;
+    }
+
+    .metrics-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 8px;
+    }
+
+    .metric {
+      flex: 1;
+      min-width: 120px;
+      padding: 8px 10px;
+      border-radius: 14px;
+      border: 1px solid rgba(55, 65, 81, 0.95);
+      background: radial-gradient(circle at top, rgba(56, 189, 248, 0.18), #020617);
+      font-size: 13px;
+    }
+
+    .metric-label {
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    .metric-value {
+      font-size: 16px;
+      font-weight: 600;
+    }
+
+    .gallery {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    .gallery-item {
+      border-radius: 14px;
+      border: 1px solid rgba(55, 65, 81, 0.95);
+      overflow: hidden;
+      background: radial-gradient(circle at top, #020617, #020617);
+      position: relative;
+      min-height: 120px;
+    }
+
+    .gallery-item span {
+      position: absolute;
+      bottom: 8px;
+      left: 10px;
+      font-size: 11px;
+      padding: 3px 8px;
+      border-radius: 999px;
+      background: rgba(15, 23, 42, 0.9);
+      border: 1px solid rgba(55, 65, 81, 0.95);
+      color: var(--text-muted);
+    }
+
+    .gallery-item img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      opacity: 0.9;
+    }
+
+    .team-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 10px;
+      margin-top: 10px;
+      font-size: 13px;
+    }
+
+    .team-card {
+      padding: 10px 11px;
+      border-radius: 14px;
+      border: 1px solid rgba(55, 65, 81, 0.95);
+      background: rgba(15, 23, 42, 0.96);
+    }
+
+    .team-name {
+      font-weight: 500;
+      color: #e5e7eb;
+    }
+
+    .team-role {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-bottom: 4px;
+    }
+
+    footer {
+      max-width: var(--max-width);
+      margin: 0 auto;
+      padding: 8px 16px 30px;
+      font-size: 11px;
+      color: var(--text-muted);
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      border-top: 1px solid rgba(31, 41, 55, 0.95);
+      margin-top: 20px;
+    }
+
+    @media (max-width: 800px) {
+      .hero {
+        grid-template-columns: minmax(0, 1fr);
+      }
+      .hero-card {
+        order: -1;
+      }
+      .two-cols {
+        grid-template-columns: minmax(0, 1fr);
+      }
+      main {
+        padding-top: 24px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <!-- HERO -->
+    <header>
+      <div class="badge">
+        <span class="badge-dot"></span>
+        GEB2507 · AI-Driven Virtual Worlds & Serious Games · Script Spire
+      </div>
+
+      <div class="hero">
+        <div>
+          <h1 class="hero-title">
+            Script Spire:<br />
+            <span>Learning to Think Like a Programmer</span>
+          </h1>
+          <p class="hero-subtitle">
+            Script Spire is a 2D puzzle platformer where you do not control the robot directly.
+            Instead, you write a small script to guide it through spikes, platforms, and goals –
+            turning abstract programming logic into a playful, visual experience.
+          </p>
+
+          <div class="hero-actions">
+            <!-- Game link -->
+            <a href="https://edeem786.github.io/WebGLgame/" class="btn btn-primary">
+              <span class="btn-icon">▶</span>
+              <span>Play Demo</span>
+            </a>
+            <!-- Cloudflare R2 PDF -->
+            <a href="https://ba.determinedmemory.online/Project%20Final%20Report.pdf" class="btn btn-ghost">
+              <span class="btn-icon">⬇</span>
+              <span>Download Final Report (PDF)</span>
+            </a>
+          </div>
+
+          <div class="hero-meta">
+            <span>Serious Game · Programming Education</span>
+            <span>Target: Absolute Beginners</span>
+            <span>Platform: PC / Web</span>
+          </div>
+        </div>
+
+        <div class="hero-card">
+          <div class="hero-card-inner">
+            <div class="hero-card-header">
+              <div class="hero-pill">
+                <span class="hero-pill-dot"></span>
+                Script Execution · Live Trace
+              </div>
+              <div class="hero-card-title">
+                "write → run → debug → refine"
+              </div>
+            </div>
+
+            <div class="hero-thumb">
+              <!-- Cloudflare R2 -->
+              <img src="https://ba.determinedmemory.online/SS-11.jpeg" alt="Script Spire gameplay screenshot" />
+            </div>
+
+            <div class="hero-card-footer">
+              <div class="hero-tags">
+                <span>Step-by-step Logic</span>
+                <span>Puzzle Platformer</span>
+                <span>Robot Control via Code</span>
+              </div>
+              <span>Designed at CUHK-Shenzhen</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- ABOUT -->
+    <section id="about">
+      <div class="section-header">
+        <div>
+          <div class="section-kicker">ABOUT THE GAME</div>
+          <h2 class="section-title">Why Script Spire?</h2>
+        </div>
+      </div>
+      <div class="section-body">
+        <p>
+          Modern society relies heavily on computers, yet many people have little understanding of
+          how programs actually operate. For beginners, programming often feels abstract and
+          intimidating, with steep logical requirements that discourage sustained learning.
+          Script Spire is designed as a serious game to address this gap by turning programming
+          concepts into an interactive, visual, and low-pressure experience.
+        </p>
+        <p>
+          Rather than teaching a specific language, the game focuses on core computational thinking:
+          step-by-step reasoning, planning, and debugging. By watching a robot follow their written
+          instructions, players see how computers execute commands line by line, building a concrete
+          mental model of program flow.
+        </p>
+
+        <div class="pill-row">
+          <span>Logical Thinking</span>
+          <span>Computational Thinking</span>
+          <span>Low-barrier Coding Experience</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- HOW IT WORKS -->
+    <section id="how">
+      <div class="section-header">
+        <div>
+          <div class="section-kicker">HOW IT WORKS</div>
+          <h2 class="section-title">Core Gameplay & Learning Loop</h2>
+        </div>
+      </div>
+      <div class="section-body two-cols">
+        <div>
+          <p>
+            Script Spire is a 2D puzzle platformer where the only way to move the robot is by
+            writing a small script in a custom mini-language and pressing <strong>Run</strong>.
+            Each level presents a layout of platforms, spikes, moving elements, and a goal object.
+            Players must plan a sequence of commands that will safely guide the robot to the target.
+          </p>
+          <ul>
+            <li><strong>right / left / stop</strong> – continuous horizontal movement</li>
+            <li><strong>jump</strong> – jumping only when on the ground</li>
+            <li><strong>wait(x)</strong> – wait for <em>x</em> seconds</li>
+            <li><strong>wait_ground / wait_air</strong> – wait until a specific state is met</li>
+          </ul>
+          <p>
+            These simple commands are powerful enough to express rich behaviors such as chained
+            jumps on moving platforms or precisely timed runs across hazards, while remaining
+            understandable to complete beginners.
+          </p>
+        </div>
+        <div>
+          <p><strong>The gameplay loop mirrors real programming:</strong></p>
+          <ul>
+            <li>Inspect the level and goal</li>
+            <li>Write a script to control the robot</li>
+            <li>Run the code and watch what happens</li>
+            <li>Debug and refine the instructions</li>
+            <li>Repeat until the solution works</li>
+          </ul>
+          <p>
+            Line highlighting during execution shows which command is currently running, helping
+            players trace the link between code and behavior. A reset button lets them retry quickly
+            without losing their script, encouraging experimentation rather than fear of failure.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- FEATURES -->
+    <section id="features">
+      <div class="section-header">
+        <div>
+          <div class="section-kicker">DESIGN HIGHLIGHTS</div>
+          <h2 class="section-title">Serious Game Features</h2>
+        </div>
+      </div>
+      <div class="section-body">
+        <div class="feature-list">
+          <div class="feature-card">
+            <div class="feature-title">Concept-first Design</div>
+            <p>
+              The game focuses on universal programming concepts like sequencing, state-based
+              actions, and timing, rather than any specific language syntax.
+            </p>
+          </div>
+          <div class="feature-card">
+            <div class="feature-title">Puzzle-based Progression</div>
+            <p>
+              Levels gradually introduce new elements—hazards, moving platforms, and timing
+              challenges—so players deepen their reasoning instead of relying on reflexes.
+            </p>
+          </div>
+          <div class="feature-card">
+            <div class="feature-title">Debugging Made Visual</div>
+            <p>
+              Robot movement, line highlighting, and easy resets help players see where their logic
+              breaks and how small changes affect the outcome.
+            </p>
+          </div>
+          <div class="feature-card">
+            <div class="feature-title">Experimentation-Friendly</div>
+            <p>
+              Failure is cheap: scripts persist across runs, and players are encouraged to “try,
+              observe, adjust” — the core mindset of real-world programming.
+            </p>
+          </div>
+        </div>
+
+        <div class="gallery">
+          <!-- Picture powered byCloudflare R2 -->
+          <div class="gallery-item">
+            <img src="https://ba.determinedmemory.online/SS-12.jpg" alt="Level selection screen" />
+            <span>Chapter & level selection</span>
+          </div>
+          <div class="gallery-item">
+            <img src="https://ba.determinedmemory.online/SS-09.jpg" alt="Core gameplay screenshot" />
+            <span>Core robot programming puzzle</span>
+          </div>
+          <div class="gallery-item">
+            <img src="https://ba.determinedmemory.online/SS-10.png" alt="Level complete screen" />
+            <span>Level complete & simple stats</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- EVALUATION -->
+    <section id="evaluation">
+      <div class="section-header">
+        <div>
+          <div class="section-kicker">EVALUATION</div>
+          <h2 class="section-title">What Did Players Think?</h2>
+        </div>
+      </div>
+      <div class="section-body">
+        <p>
+          Script Spire was evaluated with 44 participants using a mixed-methods approach combining
+          in-game analytics, a post-game questionnaire, and follow-up interviews. Overall, players
+          reported positive learning experiences and engagement with the game’s programming logic.
+        </p>
+
+        <div class="metrics-row">
+          <div class="metric">
+            <div class="metric-label">Overall Average Rating</div>
+            <div class="metric-value">3.67 / 5</div>
+            <div class="metric-label">on an 11-item Likert scale</div>
+          </div>
+          <div class="metric">
+            <div class="metric-label">Learning Effectiveness</div>
+            <div class="metric-value">3.75 / 5</div>
+            <div class="metric-label">understanding & confidence</div>
+          </div>
+          <div class="metric">
+            <div class="metric-label">Motivational Impact</div>
+            <div class="metric-value">3.76 / 5</div>
+            <div class="metric-label">interest in learning more</div>
+          </div>
+        </div>
+
+        <p style="margin-top:10px;">
+          Qualitative feedback suggests that the game helped demystify basic programming, especially
+          the idea that computers follow instructions step by step. Participants appreciated the clear
+          visual feedback and low-pressure environment, while also suggesting future enhancements such
+          as more advanced mechanics and additional tutorials.
+        </p>
+      </div>
+    </section>
+
+    <!-- TEAM -->
+    <section id="team">
+      <div class="section-header">
+        <div>
+          <div class="section-kicker">TEAM & COURSE</div>
+          <h2 class="section-title">Who Made Script Spire?</h2>
+        </div>
+      </div>
+      <div class="section-body">
+        <p>
+          Script Spire was developed as the final project for
+          <strong>GEB2507: AI-Driven Virtual Worlds and Serious Games for Societal Applications</strong>
+          at the Chinese University of Hong Kong, Shenzhen.
+        </p>
+
+        <div class="team-grid">
+          <div class="team-card">
+            <div class="team-name">Adam Tejasukmana</div>
+            <div class="team-role">Main Programmer and Game Designer</div>
+            <div>Student ID: 124040074</div>
+          </div>
+          <div class="team-card">
+            <div class="team-name">Zikun Luo</div>
+            <div class="team-role">Game Assets and Website Developer</div>
+            <div>Student ID: 124090438</div>
+          </div>
+          <div class="team-card">
+            <div class="team-name">Zhan Changxu</div>
+            <div class="team-role">Game Effectiveness Evaluation</div>
+            <div>Student ID: 122090722</div>
+          </div>
+        </div>
+
+        <p style="margin-top:10px;">
+          Instructor: <strong>Dr. Sahba Zojaji</strong><br />
+          Course: GEB2507 – AI-Driven Virtual Worlds and Serious Games for Societal Applications
+        </p>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <span>© 2025 Script Spire · Group 6</span>
+    <span>Built as a serious game for learning programming.</span>
+  </footer>
+</body>
+</html>
